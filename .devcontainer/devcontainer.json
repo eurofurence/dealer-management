@@ -1,0 +1,25 @@
+{
+    "name": "DD-Reg Symfony",
+    "dockerComposeFile": "compose.yaml",
+    "service": "app",
+    // Using "workspaceMount" here is against the spec (as we are using compose).
+    // However, mounting in the compose file fails with JetBrains with a conflicting duplicate mount.
+    // Instead we place the mount here, to be seen by both VSCode and JetBrains and also
+    // cover cases where the local workspace folder is not at the expected relative location:
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+    ],
+    "workspaceFolder": "/workspace",
+    // More portable across use cases: Map to fixed 1000:1000 inside container instead of remapping to host user
+    "updateRemoteUserUID": false,
+    "remoteUser": "vscode",
+    "containerUser": "vscode",
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "xdebug.php-debug"
+            ]
+        }
+    }
+}

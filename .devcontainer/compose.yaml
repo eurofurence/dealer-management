@@ -1,0 +1,55 @@
+# Note: We should not need x-podman.in_pod: false anymore here
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Containerfile
+    environment:
+      COMPOSER_MEMORY_LIMIT: -1
+      # Turn off XDEBUG by for default unless required
+      XDEBUG_MODE: "off"
+    security_opt:
+      # Strip SELinux labels for hosts that use SELinux
+      - label:disable
+    # Explicit rootless user mapping (see ./README.md)
+    userns_mode: "keep-id:uid=1000,gid=1000"
+    # Prevent host freeze from excessive activity (see ./README.md)
+    cpu_shares: 768
+    env_file:
+      - postgres.env
+  # Database
+  database:
+    # Postgres 18, EOL is 2030
+    image: docker.io/library/postgres:18
+    cpu_shares: 256
+    mem_limit: 512g
+    env_file:
+      - postgres.env
+    volumes:
+      - pgdata:/var/lib/postgresql:rw
+      - ./db_init:/docker-entrypoint-initdb.d:ro
+
+  # Object Storage
+  # TBD
+
+  # Mail Sink
+  mailpit:
+    image: docker.io/axllent/mailpit:v1.30
+    cpu_shares: 64
+    mem_limit: 500m
+
+  # Auth Provider - see https://www.keycloak.org/server/containers
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.7.0
+    command: "start-dev"
+    cpu_shares: 256
+    mem_limit: 1g
+    expose:
+      # Explicitly expose remapped HTTP port to sibling containers
+      - "8280"
+    env_file:
+      - keycloak.env
+
+volumes:
+  pgdata:

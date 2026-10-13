@@ -1,0 +1,40 @@
+# For now we use the default devcontainer from ms/github
+# See: https://github.com/devcontainers/images/tree/main/src/php
+# Note: Always pin a version! Tag format is devcontainerVersion-phpVersion-osVersion
+FROM mcr.microsoft.com/devcontainers/php:4-8.5-trixie
+
+# The base image already fulfils many requirements:
+# - A user "vscode" (1000:1000) exists for rootless with "sudo" option
+# - Many DX tools and dependencies
+
+# Install extra packets from trixie
+RUN apt-get update \
+    && </dev/null DEBIAN_FRONTEND=noninteractive \
+        apt-get --yes install --no-install-recommends \
+        # Used to run dev environment \
+        just parallel caddy \
+        # Health monitoring and debug tools \
+        dnsutils netcat-openbsd btop tailspin \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+
+# Install Node.js 26 (will become LTS)
+ARG NODE_VERSION=26
+RUN bash -c "source /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} && nvm use ${NODE_VERSION} && nvm alias default ${NODE_VERSION}"
+
+# Install required PHP extensions, many are already pre-installed (e.g. opcache)
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN install-php-extensions @composer bcmath gd intl apcu pcntl pdo_mysql zip pdo_pgsql
+
+# Instal Symfony CLI
+RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash && apt-get install symfony-cli && apt-get clean
+
+# Normalize workdir for rootless user
+WORKDIR /workspace
+RUN chown vscode:vscode /workspace
+# Default to rootless here as well
+USER vscode
+
+# User environment customization
+COPY --chmod=644 --chown=1000:1000 src/bash_aliases /home/chippy/.bash_aliases

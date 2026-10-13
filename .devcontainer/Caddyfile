@@ -1,0 +1,76 @@
+##
+# Configuration for local frontend proxy
+# This is referenced from a local caddy process running in the main dev container.
+# See "caddy" task in justfile.
+##
+
+# Global Options
+{
+    # debug
+    log {
+        # Enforce console output in devmode ("parallel" command in justfile otherwise triggers JSON)
+        format console
+    }
+    http_port {$CADDY_HTTP_PORT:8080}
+    https_port {$CADDY_HTTPS_PORT:8443}
+    default_sni {$CADDY_DOMAIN:localhost}
+    # Allow immediate shutdown
+    grace_period 1s
+    # Use local CA only
+    local_certs
+}
+
+# Shared internal certificate and default server
+*.{$CADDY_DOMAIN:localhost}, {$CADDY_DOMAIN:localhost}, https:// {
+    tls internal
+
+    # Match subdomains via wildcard handlers so multiple base domains are possible
+    # Note that this wildcard style does not work with the host matcher: @keycloak host sso.*
+    # Instead we must match the raw Host HTTP header
+    @keycloak header Host sso.*
+    handle @keycloak {
+        reverse_proxy keycloak:8280
+    }
+
+    @mailpit header Host mailpit.*
+    handle @mailpit {
+        reverse_proxy mailpit:8025
+    }
+
+    # Default: Serve symfony app
+    # This is intentionally the default handler without a specific hostname, so even IP should work.
+    handle {
+        handle {
+            # Public Static Files are served 1:1
+            # (Vite would also do this)
+            root * /workspace/public/public
+            @try_files file {path}
+            handle @try_files {
+                rewrite {file_match.relative}
+                file_server
+            }
+
+            # Any other unmatched URLs are redirected to the symfony dev server
+            # Equivalent to serving an /index.php fallback
+            handle {
+                reverse_proxy localhost:8000
+            }
+
+        }
+    }
+
+    handle_errors {
+        header Content-Type text/html
+        respond "<html><head><title>ERROR {err.status_code}</title><style>
+            * { font-family: sans-serif; font-size: 1.25rem; color: darkred; }
+            html { background: #FFEEDD; padding: 3rem; }
+            </style></head>
+            <body>
+            <b>Dealer's Den Devcontainer Caddy</b><br>
+            ERROR {err.status_code}: {err.status_text}<br>
+            <em>Host: {host}</em> - Path: {path}<br>
+            <b>Make sure the proxied service is running:</b><br>
+            <em>Upstream: {http.reverse_proxy.upstream.address}</em>
+            </body></html>"
+    }
+}

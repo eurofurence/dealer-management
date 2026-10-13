@@ -1,0 +1,8 @@
+##
+# Some default aliases to improve DX
+# Will be in devcontainer as: ~/.bash_aliases
+##
+
+alias ll="ls -lah"
+alias la="ls -A"
+alias l="ls -CF"
