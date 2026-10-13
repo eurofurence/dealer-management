@@ -27,8 +27,8 @@ services:
     env_file:
       - postgres.env
     volumes:
-      - pgdata:/var/lib/postgresql:rw
-      - ./db_init:/docker-entrypoint-initdb.d:ro
+      - pgdata:/var/lib/postgresql:rw,z
+      - ./db_init:/docker-entrypoint-initdb.d:ro,z
 
   # Object Storage
   # TBD
