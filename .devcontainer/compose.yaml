@@ -18,6 +18,7 @@ services:
     cpu_shares: 768
     env_file:
       - postgres.env
+    command: sleep infinity
   # Database
   database:
     # Postgres 18, EOL is 2030
