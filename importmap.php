@@ -24,7 +24,10 @@
  */
 return [
     'app' => ['path' => './assets/app.js', 'entrypoint' => true],
-    '@hotwired/stimulus' => ['version' => '3.2.2'],
     '@symfony/stimulus-bundle' => ['path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js'],
+    '@hotwired/stimulus' => ['version' => '3.2.2'],
     '@hotwired/turbo' => ['version' => '8.0.23'],
+    '@popperjs/core' => ['version' => '2.11.8'],
+    'bootstrap' => ['version' => '5.3.8'],
+    'bootstrap-icons/font/bootstrap-icons.min.css' => ['version' => '1.13.2', 'type' => 'css'],
 ];

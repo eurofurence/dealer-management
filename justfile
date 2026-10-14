@@ -6,6 +6,9 @@ help:
 _symfony-serve:
     symfony serve --no-tls --port=8000 --allow-http --listen-ip=127.0.0.1
 
+sass-watcher:
+    symfony console sass:build --watch
+
 # Run frontend proxy to combine services
 _caddy:
     caddy run --config .devcontainer/Caddyfile
@@ -29,7 +32,7 @@ _CTAG_STR := "\u{1B}[0m\u{1B}[3{#}m[{}]"
 # Start all app services in parallel, allowing to fully use the app in dev-mode via caddy
 serve:
     @echo "Starting services ..."
-    @DEFAULT_URI="https://{{_CADDY_BASE_URL}}" parallel --tagstring "{{_CTAG_STR}}" --line-buffer just ::: _caddy_info _caddy _symfony-serve
+    @DEFAULT_URI="https://{{_CADDY_BASE_URL}}" parallel --tagstring "{{_CTAG_STR}}" --line-buffer just ::: _caddy_info _caddy _symfony-serve sass-watcher
 
 # Run all test cases
 test:

@@ -56,6 +56,27 @@ To create the dashboard and first controller, use maker bundle:
     php bin/console make:admin:dashboard
     php bin/console make:controller
 
+## 6. Add bootstrap with sass theming
 
+For now we try to stick with the new asset mapper without a separate vite/webpack build.
+To make it easy to create good looking forms and since our UI focus is on correct functionality rather than fancy graphics, we go with bootstap 5, which is also natively supported by Symfony Forms.
+To recolor bootstrap, we need sass as well but this can be done with a small bundle working with the asset mapper:
 
+    php bin/console importmap:require bootstrap
+    php bin/console importmap:require bootstrap-icons/font/bootstrap-icons.min.css
+    composer require symfonycasts/sass-bundle
+    composer require twbs/bootstrap
+
+And then adding the appropriate content to `assets/app.js` etc.
+Note: For JS we use the importmap feature, for SCSS we need the composer package.
+See: https://symfony.com/bundles/SassBundle/current/index.html#using-bootstrap-sass
+
+This should be fine for now, if we get more complex later we can still switch to webpack/vite.
+
+Manually fix bootstrap version precisely to "5.8.3" in both `importmap.php` and `composer.json`.  Remove CSS from importmap since not needed.
+Delete `assets/vendor` folder, repopulate with:
+
+    php bin/console importmap:install
+
+Then add sass watcher to justfile.
 

@@ -3,18 +3,36 @@
 {% block title %}Hello HomepageController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/workspace/src/Controller/HomepageController.php</code></li>
-        <li>Your template at <code>/workspace/templates/homepage/index.html.twig</code></li>
-    </ul>
-</div>
+    <div class="container col-xl-10 px-4 py-5">
+        <div class="text-center text-lg-start">
+            <h1 class="display-4 fw-bold lh-1 text-body-emphasis mb-3">
+                Eurofurence Dealer's&nbsp;Den Portal
+            </h1>
+            <p class="col-lg-10 fs-4 mb-5">
+                Hello and a warm Welcome!
+                Thank you for your interest in the Eurofurence Dealer's&nbsp;Den and Artist Alley.
+                On this website, you can:
+            </p>
+            <div class="row">
+                <div class="col-12 col-xl-6 mb-4">
+                    <a href="#" class="btn btn-lg p-3 w-100 btn-primary">
+                        <i class="bi bi-clipboard-check-fill me-2"></i>
+                        Apply for a Table in the Dealer's&nbsp;Den
+                    </a>
+                </div>
+                <div class="col-12 col-xl-6 mb-4">
+                    <a href="#" class="btn btn-lg p-3 w-100 btn-primary">
+                        <i class="bi bi-person-vcard-fill me-2"></i>
+                        Prepare your publicly visible Profile
+                    </a>
+                </div>
+                <div class="col-12 col-xl-6 mb-4">
+                    <a href="#" class="btn btn-lg p-3 w-100 btn-primary">
+                        <i class="bi bi-person-badge-fill me-2"></i>
+                        Check-in for an Artist&nbsp;Alley Table
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
