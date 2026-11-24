@@ -6,15 +6,15 @@ use App\Repository\AssistantApplicationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AssistantApplicationRepository::class)]
-class AssistantApplication
+class Assistant
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'assistantApplications')]
-    private ?User $applicant = null;
+    #[ORM\ManyToOne(inversedBy: 'assistants')]
+    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'assistants')]
     private ?Dealership $dealership = null;
@@ -24,14 +24,14 @@ class AssistantApplication
         return $this->id;
     }
 
-    public function getApplicant(): ?User
+    public function getUser(): ?User
     {
-        return $this->applicant;
+        return $this->user;
     }
 
-    public function setApplicant(?User $applicant): static
+    public function setUser(?User $user): static
     {
-        $this->applicant = $applicant;
+        $this->user = $user;
 
         return $this;
     }

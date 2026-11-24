@@ -1,2 +1,87 @@
 framework:
-    workflows: ~
+    workflows:
+#        dealers_den_application:
+#            type: state_machine
+#            marking_store:
+#                type: method
+#                property: workflowState
+#            supports:
+#                - App\Entity\DealersDenApplication
+#            initial_marking: draft
+#            places:
+#                - draft
+#                - submitted
+#                - approved
+#                - rejected
+#                - waitlisted
+#                - table_offered
+#                - table_accepted
+#            transitions:
+#                submit:
+#                    from: draft
+#                    to: submitted
+#                approve:
+#                    from: submitted
+#                    to: approved
+#                    guard: "is_granted('ROLE_DEALER_REVIEWER')"
+#                reject_revise:
+#                    from: submitted
+#                    to: draft
+#                    guard: "is_granted('ROLE_DEALER_REVIEWER')"
+#                reject:
+#                    from: submitted
+#                    to: rejected
+#                    guard: "is_granted('ROLE_DEALER_MANAGER')"
+#                unreject:
+#                    from: rejected
+#                    to: submitted
+#                    guard: "is_granted('ROLE_DEALER_MANAGER')"
+#                waitlist:
+#                    from: approved
+#                    to: waitlisted
+#                    guard: "is_granted('ROLE_DEALER_MANAGER')"
+#                offer_table:
+#                    from:
+#                        - approved
+#                        - waitlisted
+#                    to: table_offered
+#                    guard: "is_granted('ROLE_DEALER_MANAGER')"
+#                decline_table:
+#                    from: table_offered
+#                    to: approved
+#                accept_table:
+#                    from: table_offered
+#                    to: table_accepted
+#                pay_table:
+#                    from: table_accepted
+#                    to: table_payed
+#                check_in:
+#                    from: table_payed
+#                    to: checked_in
+#                    guard: "is_granted('ROLE_DEALER_CHECKIN')"
+#                check_out:
+#                    from: checked_in
+#                    to: checked_out
+#                    guard: "is_granted('ROLE_DEALER_CHECKOUT')"
+#                withdraw:
+#                    from:
+#                        - waitlisted
+#                        - table_offered
+#                    to: withdrawn
+#                cancel_table:
+#                    from: table_accepted
+#                    to: withdrawn
+#                    guard: "is_granted('ROLE_DEALER_MANAGER')"
+#                reapprove:
+#                    from: withdrawn
+#                    to: approved
+#                    guard: "is_granted('ROLE_DEALER_MANAGER')"
+#                refund_table:
+#                    from: table_payed
+#                    to: withdrawn
+#                    guard: "is_granted('ROLE_DEALER_MANAGER')"
+#                flag_no_show:
+#                    from: table_payed
+#                    to: no_show
+#                    guard: "is_granted('ROLE_DEALER_MANAGER')"
+#

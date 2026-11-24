@@ -7,8 +7,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * A logical table which is a group of one or more physical tables.
+ * This is equivalent to what is usually meant when people refer to "a table".
+ * Also serves as a location designator (via tableNumber).
+ */
 #[ORM\Entity(repositoryClass: TableRepository::class)]
-#[ORM\Table(name: 'app_table')]
+#[ORM\Table(name: 'logical_table')]
 class Table
 {
     #[ORM\Id]
@@ -16,24 +21,24 @@ class Table
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tables')]
-    private ?TableType $type = null;
-
-    #[ORM\OneToOne(mappedBy: 'offeredTable', cascade: ['persist', 'remove'])]
-    private ?Dealership $offeredDealership = null;
-
-    #[ORM\OneToOne(mappedBy: 'assignedTable', cascade: ['persist', 'remove'])]
-    private ?Dealership $assignedDealership = null;
+    /**
+     * @var Collection<int, ArtistAlleySession> Artist alley sessions which have/had claimed this table.
+     */
+    #[ORM\OneToMany(targetEntity: ArtistAlleySession::class, mappedBy: 'claimedTable')]
+    private Collection $artistAlleySessions;
 
     /**
-     * @var Collection<int, ArtistAlleyApplication>
+     * @var Dealership|null The dealership which is assigned to this table (or none).
      */
-    #[ORM\OneToMany(targetEntity: ArtistAlleyApplication::class, mappedBy: 'claimedTable')]
-    private Collection $artistAlleyApplications;
+    #[ORM\OneToOne(mappedBy: 'table', cascade: ['persist', 'remove'])]
+    private ?Dealership $dealership = null;
+
+    #[ORM\Column]
+    private bool $afterDark = false;
 
     public function __construct()
     {
-        $this->artistAlleyApplications = new ArrayCollection();
+        $this->artistAlleySessions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -41,54 +46,66 @@ class Table
         return $this->id;
     }
 
-    public function getType(): ?TableType
-    {
-        return $this->type;
-    }
-
-    public function setType(?TableType $type): static
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    public function getOfferedDealership(): ?Dealership
-    {
-        return $this->offeredDealership;
-    }
-
-    public function getAssignedDealership(): ?Dealership
-    {
-        return $this->assignedDealership;
-    }
-
     /**
-     * @return Collection<int, ArtistAlleyApplication>
+     * @return Collection<int, ArtistAlleySession>
      */
-    public function getArtistAlleyApplications(): Collection
+    public function getArtistAlleySessions(): Collection
     {
-        return $this->artistAlleyApplications;
+        return $this->artistAlleySessions;
     }
 
-    public function addArtistAlleyApplication(ArtistAlleyApplication $artistAlleyApplication): static
+    public function addArtistAlleyApplication(ArtistAlleySession $artistAlleyApplication): static
     {
-        if (!$this->artistAlleyApplications->contains($artistAlleyApplication)) {
-            $this->artistAlleyApplications->add($artistAlleyApplication);
+        if (!$this->artistAlleySessions->contains($artistAlleyApplication)) {
+            $this->artistAlleySessions->add($artistAlleyApplication);
             $artistAlleyApplication->setClaimedTable($this);
         }
 
         return $this;
     }
 
-    public function removeArtistAlleyApplication(ArtistAlleyApplication $artistAlleyApplication): static
+    public function removeArtistAlleyApplication(ArtistAlleySession $artistAlleyApplication): static
     {
-        if ($this->artistAlleyApplications->removeElement($artistAlleyApplication)) {
+        if ($this->artistAlleySessions->removeElement($artistAlleyApplication)) {
             // set the owning side to null (unless already changed)
             if ($artistAlleyApplication->getClaimedTable() === $this) {
                 $artistAlleyApplication->setClaimedTable(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDealership(): ?Dealership
+    {
+        return $this->dealership;
+    }
+
+    public function setDealership(?Dealership $dealership): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($dealership === null && $this->dealership !== null) {
+            $this->dealership->setTable(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($dealership !== null && $dealership->getTable() !== $this) {
+            $dealership->setTable($this);
+        }
+
+        $this->dealership = $dealership;
+
+        return $this;
+    }
+
+    public function isAfterDark(): bool
+    {
+        return $this->afterDark;
+    }
+
+    public function setAfterDark(bool $afterDark): static
+    {
+        $this->afterDark = $afterDark;
 
         return $this;
     }

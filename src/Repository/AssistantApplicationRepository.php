@@ -2,18 +2,18 @@
 
 namespace App\Repository;
 
-use App\Entity\AssistantApplication;
+use App\Entity\Assistant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<AssistantApplication>
+ * @extends ServiceEntityRepository<Assistant>
  */
 class AssistantApplicationRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, AssistantApplication::class);
+        parent::__construct($registry, Assistant::class);
     }
 
 //    /**

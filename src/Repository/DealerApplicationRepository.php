@@ -2,18 +2,18 @@
 
 namespace App\Repository;
 
-use App\Entity\DealerApplication;
+use App\Entity\Dealer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<DealerApplication>
+ * @extends ServiceEntityRepository<Dealer>
  */
 class DealerApplicationRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, DealerApplication::class);
+        parent::__construct($registry, Dealer::class);
     }
 
 //    /**

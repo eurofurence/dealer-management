@@ -42,6 +42,10 @@ class DashboardController extends AbstractDashboardController
         // Find icons at: https://fontawesome.com/v5/search
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-chart-line');
         // yield MenuItem::linkTo(SomeCrudController::class, 'The Label', 'fas fa-list');
+        yield MenuItem::linkTo(UserCrudController::class, 'Users', 'fas fa-users');
+        yield MenuItem::linkTo(PublicProfileCrudController::class, 'Profiles', 'fas fas-checklist');
+        yield MenuItem::linkTo(KeywordCrudController::class, 'Keywords', 'fas fa-key');
+        yield MenuItem::linkTo(TablePackageCrudController::class, 'Table Packages', 'fas fa-table');
         yield MenuItem::section();
         yield MenuItem::linkToRoute('Homepage', 'fa fa-home', 'app_homepage');
     }
